@@ -8,8 +8,11 @@ from app.db.seed_data import DEFAULT_CATEGORIES, DEFAULT_SECTIONS
 from app.repositories.category_repo import CategoryRepository
 from app.repositories.product_repo import ProductRepository
 from app.repositories.section_repo import SectionRepository
+from app.repositories.review_repo import ReviewRepository
 from app.schemas.product import (
     CategoryResponse,
+    ProductReviewResponse,
+    RatingSummaryResponse,
     StorefrontResponse,
     ProductCreate,
     ProductResponse,
@@ -24,6 +27,7 @@ VALID_SECTION_SLUGS = {s["slug"] for s in DEFAULT_SECTIONS}
 category_repo = CategoryRepository()
 section_repo = SectionRepository()
 product_repo = ProductRepository()
+review_repo = ReviewRepository()
 
 
 class ProductService:
@@ -46,6 +50,9 @@ class ProductService:
             id=product.id,
             name=product.name,
             image_url=product.image_url,
+            description=product.description,
+            stock=product.stock if product.stock is not None else 0,
+            ratings=product.ratings,
             current_price=product.current_price,
             original_price=product.original_price,
             discount_percent=product.discount_percent,
@@ -183,3 +190,30 @@ class ProductService:
         section_ids = await self._resolve_section_ids(db, slugs)
         product = await product_repo.set_sections(db, product, section_ids)
         return self._to_response(product)
+
+    async def get_recommended(self, db: AsyncSession, product_id: int) -> list[ProductResponse]:
+        await seed_database(db)
+        product, recommended = await product_repo.get_recommended(db, product_id)
+        if not product:
+            raise ValueError("Product not found")
+        return [self._to_response(p) for p in recommended]
+
+    async def get_reviews(self, db: AsyncSession, product_id: int) -> list[ProductReviewResponse]:
+        product = await product_repo.get_by_id(db, product_id)
+        if not product:
+            raise ValueError("Product not found")
+        reviews = await review_repo.get_by_product_id(db, product_id)
+        return [ProductReviewResponse.model_validate(r) for r in reviews]
+
+    async def get_rating_summary(self, db: AsyncSession, product_id: int) -> RatingSummaryResponse:
+        product = await product_repo.get_by_id(db, product_id)
+        if not product:
+            raise ValueError("Product not found")
+        average, total, rating_counts = await review_repo.get_rating_summary(db, product_id)
+        if average is not None:
+            await product_repo.update_ratings(db, product_id, average)
+        return RatingSummaryResponse(
+            average_rating=average,
+            total_reviews=total,
+            rating_counts=rating_counts,
+        )

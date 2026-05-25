@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, Column, DateTime, Integer, Numeric, String
+from sqlalchemy import Boolean, Column, DateTime, Integer, Numeric, String, Text
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
@@ -15,6 +15,9 @@ class Product(Base):
     current_price = Column(Numeric(10, 2), nullable=False)
     original_price = Column(Numeric(10, 2), nullable=True)
     discount_percent = Column(Integer, nullable=True)
+    description = Column(Text, nullable=True)
+    stock = Column(Integer, nullable=False, default=0)
+    ratings = Column(Numeric(3, 2), nullable=True)
     is_active = Column(Boolean, default=True)
     created_date = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     modified_date = Column(
@@ -25,3 +28,4 @@ class Product(Base):
 
     product_categories = relationship("ProductCategory", back_populates="product", cascade="all, delete-orphan")
     product_sections = relationship("ProductSection", back_populates="product", cascade="all, delete-orphan")
+    reviews = relationship("ProductReview", back_populates="product", cascade="all, delete-orphan")

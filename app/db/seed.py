@@ -25,8 +25,26 @@ async def seed_database(db: AsyncSession) -> None:
     else:
         await _repair_product_links(db)
 
+    await _backfill_product_fields(db)
     await _backfill_null_timestamps(db)
     await db.commit()
+
+
+async def _backfill_product_fields(db: AsyncSession) -> None:
+    """Backfill description, stock, and ratings on existing seeded products."""
+    result = await db.execute(select(Product))
+    products_by_name = {p.name: p for p in result.scalars().all()}
+
+    for item in DUMMY_PRODUCTS:
+        product = products_by_name.get(item["name"])
+        if not product:
+            continue
+        if product.description is None and item.get("description"):
+            product.description = item["description"]
+        if product.stock is None or product.stock == 0:
+            product.stock = item.get("stock", 0)
+        if product.ratings is None and item.get("ratings") is not None:
+            product.ratings = item["ratings"]
 
 
 async def _backfill_null_timestamps(db: AsyncSession) -> None:
@@ -78,6 +96,9 @@ async def _create_dummy_products(db: AsyncSession) -> None:
         product_data = {
             "name": item["name"],
             "image_url": item["image_url"],
+            "description": item.get("description"),
+            "stock": item.get("stock", 0),
+            "ratings": item.get("ratings"),
             "current_price": item["current_price"],
             "original_price": item["original_price"],
             "discount_percent": item["discount_percent"],

@@ -72,6 +72,9 @@ DUMMY_PRODUCTS = [
     {
         "name": "Apple iPhone 14 Pro Max 128GB Deep Purple",
         "image_url": "https://placehold.co/600x600/ede9fe/5b21b6?text=iPhone+14+Pro",
+        "description": "6.7-inch Super Retina XDR display with ProMotion. A16 Bionic chip and 48MP main camera.",
+        "stock": 25,
+        "ratings": Decimal("4.80"),
         "current_price": Decimal("810.00"),
         "original_price": Decimal("900.00"),
         "discount_percent": 10,
@@ -81,6 +84,9 @@ DUMMY_PRODUCTS = [
     {
         "name": "Apple AirPods Max Over-Ear Headphones - Space Gray",
         "image_url": "https://placehold.co/600x600/f3f4f6/374151?text=AirPods+Max",
+        "description": "High-fidelity audio with Active Noise Cancellation and spatial audio.",
+        "stock": 40,
+        "ratings": Decimal("4.60"),
         "current_price": Decimal("299.00"),
         "original_price": Decimal("599.00"),
         "discount_percent": 50,
@@ -90,6 +96,9 @@ DUMMY_PRODUCTS = [
     {
         "name": "Samsung Galaxy Watch6 Classic 47mm Black",
         "image_url": "https://placehold.co/600x600/e0e7ff/312e81?text=Galaxy+Watch6",
+        "description": "Premium smartwatch with rotating bezel, health tracking, and Wear OS.",
+        "stock": 18,
+        "ratings": Decimal("4.50"),
         "current_price": Decimal("249.00"),
         "original_price": Decimal("329.00"),
         "discount_percent": 24,
@@ -99,6 +108,9 @@ DUMMY_PRODUCTS = [
     {
         "name": "Apple iPad 9 10.2 64GB Wi-Fi Silver (MK2L3) 2021",
         "image_url": "https://placehold.co/600x600/f5f5f4/44403c?text=iPad+9",
+        "description": "10.2-inch Retina display, A13 Bionic chip, and support for Apple Pencil (1st gen).",
+        "stock": 30,
+        "ratings": Decimal("4.70"),
         "current_price": Decimal("279.00"),
         "original_price": Decimal("329.00"),
         "discount_percent": 15,
