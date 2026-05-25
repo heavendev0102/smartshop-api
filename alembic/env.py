@@ -11,6 +11,9 @@ from app.models.product import Product  # noqa: F401
 from app.models.product_category import ProductCategory  # noqa: F401
 from app.models.section import Section  # noqa: F401
 from app.models.product_section import ProductSection  # noqa: F401
+from app.models.product_review import ProductReview  # noqa: F401
+from app.models.wishlist_item import WishlistItem  # noqa: F401
+from app.models.cart_item import CartItem  # noqa: F401
 
 config = context.config
 

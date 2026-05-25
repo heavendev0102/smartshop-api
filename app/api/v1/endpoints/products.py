@@ -6,8 +6,10 @@ from app.schemas.product import (
     ProductCategoryAssign,
     ProductCreate,
     ProductResponse,
+    ProductReviewResponse,
     ProductSectionAssign,
     ProductUpdate,
+    RatingSummaryResponse,
 )
 from app.services.product_service import ProductService
 
@@ -29,6 +31,30 @@ async def create_product(product: ProductCreate, db: AsyncSession = Depends(get_
         return await service.create_product(db, product)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/{product_id}/recommended", response_model=list[ProductResponse])
+async def get_recommended_products(product_id: int, db: AsyncSession = Depends(get_db)):
+    try:
+        return await service.get_recommended(db, product_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.get("/{product_id}/reviews", response_model=list[ProductReviewResponse])
+async def get_product_reviews(product_id: int, db: AsyncSession = Depends(get_db)):
+    try:
+        return await service.get_reviews(db, product_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.get("/{product_id}/rating-summary", response_model=RatingSummaryResponse)
+async def get_product_rating_summary(product_id: int, db: AsyncSession = Depends(get_db)):
+    try:
+        return await service.get_rating_summary(db, product_id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @router.get("/{product_id}", response_model=ProductResponse)

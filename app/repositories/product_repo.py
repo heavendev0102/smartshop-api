@@ -89,3 +89,38 @@ class ProductRepository:
             db.add(ProductSection(product_id=product.id, section_id=section_id))
         await db.commit()
         return await self.get_by_id(db, product.id)
+
+    async def get_recommended(self, db: AsyncSession, product_id: int, limit: int = 10):
+        product = await self.get_by_id(db, product_id)
+        if not product:
+            return None, []
+
+        category_ids = [pc.category_id for pc in product.product_categories if pc.category_id]
+        if not category_ids:
+            query = (
+                (await self._product_query())
+                .where(Product.id != product_id, Product.is_active.is_(True))
+                .order_by(Product.ratings.desc().nullslast(), Product.created_date.desc())
+                .limit(limit)
+            )
+        else:
+            query = (
+                (await self._product_query())
+                .join(Product.product_categories)
+                .where(
+                    ProductCategory.category_id.in_(category_ids),
+                    Product.id != product_id,
+                    Product.is_active.is_(True),
+                )
+                .order_by(Product.ratings.desc().nullslast(), Product.created_date.desc())
+                .limit(limit)
+            )
+        result = await db.execute(query)
+        return product, result.scalars().unique().all()
+
+    async def update_ratings(self, db: AsyncSession, product_id: int, average_rating):
+        product = await db.get(Product, product_id)
+        if product:
+            product.ratings = average_rating
+            await db.commit()
+        return product
