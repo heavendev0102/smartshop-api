@@ -1,7 +1,5 @@
 from logging.config import fileConfig
-
 from sqlalchemy import engine_from_config, pool
-
 from alembic import context
 from app.core.config import settings
 from app.db.base import Base
@@ -14,7 +12,7 @@ from app.models.product_section import ProductSection  # noqa: F401
 from app.models.product_review import ProductReview  # noqa: F401
 from app.models.wishlist_item import WishlistItem  # noqa: F401
 from app.models.cart_item import CartItem  # noqa: F401
-
+from app.models.address import Address
 config = context.config
 
 if config.config_file_name is not None:

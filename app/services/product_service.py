@@ -217,3 +217,13 @@ class ProductService:
             total_reviews=total,
             rating_counts=rating_counts,
         )
+    
+    async def search_products(
+    self,
+    db: AsyncSession,
+    q: str,
+    ) -> list[ProductResponse]:
+
+        products = await product_repo.search_products(db, q)
+
+        return [self._to_response(product) for product in products]

@@ -1,3 +1,6 @@
+from operator import or_
+from unittest import result
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -124,3 +127,17 @@ class ProductRepository:
             product.ratings = average_rating
             await db.commit()
         return product
+    
+    async def search_products(self,db: AsyncSession,q: str,):
+        query = ((await self._product_query())
+        .where(
+        or_(
+        Product.name.ilike(f"%{q}%"),
+        Product.description.ilike(f"%{q}%")
+        ),
+        Product.is_active.is_(True)
+        )
+        )
+
+        result = await db.execute(query)
+        return result.scalars().unique().all()

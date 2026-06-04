@@ -16,6 +16,15 @@ from app.services.product_service import ProductService
 router = APIRouter()
 service = ProductService()
 
+@router.get("/search", response_model=list[ProductResponse])
+async def search_products(
+    q: str,
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        return await service.search_products(db, q)
+    except ValueError as e:
+        raise HTTPException(status_code=404 if "not found" in str(e).lower() else 400, detail=str(e))
 
 @router.get("/category/{category_slug}", response_model=list[ProductResponse])
 async def list_by_category(category_slug: str, db: AsyncSession = Depends(get_db)):
@@ -99,3 +108,5 @@ async def assign_product_sections(
         return await service.assign_sections(db, product_id, body.section_slugs)
     except ValueError as e:
         raise HTTPException(status_code=404 if "not found" in str(e).lower() else 400, detail=str(e))
+
+
