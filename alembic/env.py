@@ -13,6 +13,7 @@ from app.models.product_review import ProductReview  # noqa: F401
 from app.models.wishlist_item import WishlistItem  # noqa: F401
 from app.models.cart_item import CartItem  # noqa: F401
 from app.models.address import Address
+from app.models.delivery_option import DeliveryOption
 config = context.config
 
 if config.config_file_name is not None:
