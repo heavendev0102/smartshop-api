@@ -14,6 +14,10 @@ from app.models.wishlist_item import WishlistItem  # noqa: F401
 from app.models.cart_item import CartItem  # noqa: F401
 from app.models.address import Address
 from app.models.delivery_option import DeliveryOption
+from app.models.order import Order
+from app.models.order_item import OrderItem
+from app.models.blog import Blog
+
 config = context.config
 
 if config.config_file_name is not None:
