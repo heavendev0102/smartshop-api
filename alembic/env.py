@@ -24,7 +24,13 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Use DATABASE_URL from app/.env or environment (Render sets DATABASE_URL)
-config.set_main_option("sqlalchemy.url", settings.database_url_sync)
+print("DATABASE URL:", settings.database_url_sync)
+
+config.set_main_option(
+    "sqlalchemy.url",
+    settings.database_url_sync,
+)
+# config.set_main_option("sqlalchemy.url", settings.database_url_sync)
 
 target_metadata = Base.metadata
 

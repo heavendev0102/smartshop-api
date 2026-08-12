@@ -148,7 +148,6 @@ activemq-data/
 *.sage.py
 
 # Environments
-.env
 app/.env
 .envrc
 .venv
@@ -217,3 +216,5 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+config.bat
+node_modules
