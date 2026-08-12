@@ -1,0 +1,30 @@
+services:
+
+  db:
+    image: postgres:16
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: radha0keli0kunj0
+      POSTGRES_DB: Smartshop
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      - db
+
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:radha0keli0kunj0@db:5432/Smartshop
+
+volumes:
+  postgres_data:

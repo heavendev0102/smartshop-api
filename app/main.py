@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -10,11 +11,31 @@ from app.db.seed import seed_database
 from app.db.session import AsyncSessionLocal
 
 
+# @asynccontextmanager
+# async def lifespan(app: FastAPI):
+#     run_migrations()
+#     async with AsyncSessionLocal() as db:
+#         await seed_database(db)
+#     yield
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    print("1. Starting lifespan")
+
+    print("2. Before migrations")
     run_migrations()
+    print("3. After migrations")
+
+    print("4. Before DB session")
     async with AsyncSessionLocal() as db:
+        print("5. DB session opened")
+
+        print("6. Before seed")
         await seed_database(db)
+        print("7. After seed")
+
+    print("8. Startup complete")
     yield
 
 
